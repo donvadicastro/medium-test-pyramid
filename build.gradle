@@ -149,7 +149,7 @@ task e2eTest(type: Test) {
 
 task('pyramidTest', dependsOn: ['unitTest', 'integrationTest', 'e2eTest']) << {
     println "Unit: ${unitTests}, Integration: ${integrationTests}, End-to-end: ${e2eTests}"
-    project.file("test-pyramid.json").setText("{\"unitCount\": ${unitTests}, \"integrationCount\": ${integrationTests}, \"e2eCount\": ${e2eTests}}")
+    project.file("build/reports/test-pyramid.json").setText("{\"unitCount\": ${unitTests}, \"integrationCount\": ${integrationTests}, \"e2eCount\": ${e2eTests}}")
 }
 
 apply from: 'gradle/docker.gradle'
