@@ -6,43 +6,43 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v3
+            - uses: actions/checkout@v3
 
-            -   name: Set up NodeJS
-            -   uses: actions/setup-node@v3
-                with:
-                    node-version: '12'
+            - name: Set up NodeJS
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '12'
 
-            -   name: Set up JDK 8
-                uses: actions/setup-java@v3
-                with:
-                    java-version: '8'
-                    distribution: 'adopt'
+            - name: Set up JDK 8
+              uses: actions/setup-java@v3
+              with:
+                  java-version: '8'
+                  distribution: 'adopt'
 
-            -   name: Setup Gradle
-                uses: gradle/gradle-build-action@v2
+            - name: Setup Gradle
+              uses: gradle/gradle-build-action@v2
 
-            -   name: Make gradlew executable
-                run: chmod +x ./gradlew
+            - name: Make gradlew executable
+              run: chmod +x ./gradlew
 
-            -   name: Execute Gradle build
-                run: ./gradlew build -x test
+            - name: Execute Gradle build
+              run: ./gradlew build -x test
 
-            -   name: Run tests
-                run: ./gradlew pyramidTest
+            - name: Run tests
+              run: ./gradlew pyramidTest
 
-            -   name: Analyze results
-                run: |
-                    echo "::set-output name=unit_count::`cat ${PWD}/build/reports/test-pyramid.json | jq -r '.unitCount'`"
-                    echo "::set-output name=integration_count::`cat ${PWD}/build/reports/test-pyramid.json | jq -r '.integrationCount'`"
-                    echo "::set-output name=e2e_count::`cat ${PWD}/src/build/reports/test-pyramid.json | jq -r '.e2eCount'`"
+            - name: Analyze results
+              run: |
+                  echo "::set-output name=unit_count::`cat ${PWD}/build/reports/test-pyramid.json | jq -r '.unitCount'`"
+                  echo "::set-output name=integration_count::`cat ${PWD}/build/reports/test-pyramid.json | jq -r '.integrationCount'`"
+                  echo "::set-output name=e2e_count::`cat ${PWD}/src/build/reports/test-pyramid.json | jq -r '.e2eCount'`"
 
-            -   name: Create comment
-                uses: peter-evans/create-or-update-comment@v1
-                if: always()
-                with:
-                    body: |
-                        Test pyramid:
-                        - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
-                        - Integration tests count: **${{ steps.analyze.outputs.integrationCount }}**
-                        - End-to-end tests count: **${{ steps.analyze.outputs.e2eCount }}**
+            - name: Create comment
+              uses: peter-evans/create-or-update-comment@v1
+              if: always()
+              with:
+                  body: |
+                      Test pyramid:
+                      - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
+                      - Integration tests count: **${{ steps.analyze.outputs.integrationCount }}**
+                      - End-to-end tests count: **${{ steps.analyze.outputs.e2eCount }}**
