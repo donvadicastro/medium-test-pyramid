@@ -97,6 +97,11 @@ if (OperatingSystem.current().isWindows()) {
     }
 }
 
+def allTests = 0
+def unitTests = 0
+def integrationTests = 0
+def e2eTests = 0
+
 test {
     exclude '**/CucumberTest*'
 
@@ -104,6 +109,13 @@ test {
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
     // ignoreFailures true
     reports.html.enabled = false
+
+    testLogging {
+        afterSuite { desc, result ->
+            println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            allTests = result.testCount
+        }
+    }
 }
 
 task testReport(type: TestReport) {
@@ -111,6 +123,31 @@ task testReport(type: TestReport) {
     reportOn test
 }
 
+task integrationTest(type: Test) {
+    filter {
+        includeTestsMatching "com.medium.pyramid.repository.*"
+    }
+
+    testLogging {
+        afterSuite { desc, result ->
+            println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            integrationTests = result.testCount
+        }
+    }
+}
+
+task e2eTest(type: Test) {
+    filter {
+        includeTestsMatching "com.medium.pyramid.web.rest.*"
+    }
+
+    testLogging {
+        afterSuite { desc, result ->
+            println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            e2eTests = result.testCount
+        }
+    }
+}
 
 apply from: 'gradle/docker.gradle'
 apply from: 'gradle/sonar.gradle'
