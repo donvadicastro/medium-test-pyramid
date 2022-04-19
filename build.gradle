@@ -97,15 +97,20 @@ if (OperatingSystem.current().isWindows()) {
     }
 }
 
-def allTests = 0
 def unitTests = 0
 def integrationTests = 0
 def e2eTests = 0
 
-test {
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/tests")
+    reportOn test
+}
+
+task unitTest(type: Test) {
     exclude '**/CucumberTest*'
-    exclude '**/service/*'
-    exclude '**/repository/*'
+    exclude '**/web/**'
+    exclude '**/repository/**'
 
     // uncomment if the tests reports are not generated
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
@@ -115,14 +120,9 @@ test {
     testLogging {
         afterSuite { desc, result ->
             println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
-            allTests = result.testCount
+            unitTests = result.testCount
         }
     }
-}
-
-task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/tests")
-    reportOn test
 }
 
 task integrationTest(type: Test) {
@@ -139,13 +139,16 @@ task integrationTest(type: Test) {
 task e2eTest(type: Test) {
     include '**/web/**'
 
-
     testLogging {
         afterSuite { desc, result ->
             println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
             e2eTests = result.testCount
         }
     }
+}
+
+task('pyramidTest', dependsOn: ['unitTest', 'integrationTest', 'e2eTest']) << {
+    println "Unit: ${unitTests}, Integration: ${integrationTests}, End-to-end: ${e2eTests}"
 }
 
 apply from: 'gradle/docker.gradle'
