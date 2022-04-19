@@ -85,6 +85,6 @@ jobs:
                     issue-number: ${{ github.event.pull_request.number }}
                     body: |
                         Test pyramid:
-                        - Unit tests count: **${{ steps.analyze.outputs.unit_count }}** of ${{ steps.analyze.outputs.all_count }}
-                        - Integration tests count: **${{ steps.analyze.outputs.integration_count }}** of ${{ steps.analyze.outputs.all_count }}
-                        - End-to-end tests count: **${{ steps.analyze.outputs.e2e_count }}** of ${{ steps.analyze.outputs.all_count }}
+                        - Unit tests count: **${{ steps.analyze.outputs.unit_count }}** of **${{ steps.analyze.outputs.all_count }}**
+                        - Integration tests count: **${{ steps.analyze.outputs.integration_count }}** of **${{ steps.analyze.outputs.all_count }}**
+                        - End-to-end tests count: **${{ steps.analyze.outputs.e2e_count }}** of **${{ steps.analyze.outputs.all_count }}**
