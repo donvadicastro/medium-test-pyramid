@@ -23,10 +23,11 @@ jobs:
             - name: Execute Gradle build
               run: ./gradlew build -x test
 
-    unit-tests:
-        runs-on: ubuntu-latest
-        name: Unit tests
-        needs: [build]
-        steps:
             - name: Run unit tests
-              run: ./gradlew build test
+              run: ./gradlew test
+
+            - name: Run integration tests
+              run: ./gradlew integrationTest
+
+            - name: Run end-to-end tests
+              run: ./gradlew e2eTest

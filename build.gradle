@@ -104,6 +104,8 @@ def e2eTests = 0
 
 test {
     exclude '**/CucumberTest*'
+    exclude '**/service/*'
+    exclude '**/repository/*'
 
     // uncomment if the tests reports are not generated
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
@@ -124,9 +126,7 @@ task testReport(type: TestReport) {
 }
 
 task integrationTest(type: Test) {
-    filter {
-        includeTestsMatching "com.medium.pyramid.repository.*"
-    }
+    include '**/repository/**'
 
     testLogging {
         afterSuite { desc, result ->
@@ -137,9 +137,8 @@ task integrationTest(type: Test) {
 }
 
 task e2eTest(type: Test) {
-    filter {
-        includeTestsMatching "com.medium.pyramid.web.rest.*"
-    }
+    include '**/web/**'
+
 
     testLogging {
         afterSuite { desc, result ->
