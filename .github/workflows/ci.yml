@@ -31,10 +31,11 @@ jobs:
                 run: ./gradlew pyramidTest
 
             -   name: Analyze results
+                id: analyze
                 run: |
                     echo "::set-output name=unit_count::`cat ./build/reports/test-pyramid.json | jq -r '.unitCount'`"
                     echo "::set-output name=integration_count::`cat ./build/reports/test-pyramid.json | jq -r '.integrationCount'`"
-                    echo "::set-output name=e2e_count::`cat ./src/build/reports/test-pyramid.json | jq -r '.e2eCount'`"
+                    echo "::set-output name=e2e_count::`cat ./build/reports/test-pyramid.json | jq -r '.e2eCount'`"
 
             -   name: Create comment
                 uses: peter-evans/create-or-update-comment@v1
