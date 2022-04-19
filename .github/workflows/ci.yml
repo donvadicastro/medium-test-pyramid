@@ -23,5 +23,22 @@ jobs:
             - name: Execute Gradle build
               run: ./gradlew build -x test
 
-            - name: Run unit tests
+            - name: Run tests
               run: ./gradlew pyramidTest
+
+            - name: Analyze results
+              run: |
+                  echo "::set-output name=unit_count::`cat ${PWD}/test-pyramid.json | jq -r '.unitCount'`"
+                  echo "::set-output name=integration_count::`cat ${PWD}/test-pyramid.json | jq -r '.integrationCount'`"
+                  echo "::set-output name=e2e_count::`cat ${PWD}/src/test-pyramid.json | jq -r '.e2eCount'`"
+
+            - name: Create comment
+              uses: peter-evans/create-or-update-comment@v1
+              if: always()
+              with:
+                  issue-number: ${{ github.event.pull_request.number }}
+                  body: |
+                      Test pyramid:
+                      - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
+                      - Integration tests count: **${{ steps.analyze.outputs.integrationCount }}**
+                      - End-to-end tests count: **${{ steps.analyze.outputs.e2eCount }}**
