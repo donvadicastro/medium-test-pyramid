@@ -33,14 +33,15 @@ jobs:
 
             -   name: Analyze results
                 run: |
-                    echo "::set-output name=unit_count::`cat ${PWD}/build/reports/test-pyramid.json | jq -r '.unitCount'`"
-                    echo "::set-output name=integration_count::`cat ${PWD}/build/reports/test-pyramid.json | jq -r '.integrationCount'`"
-                    echo "::set-output name=e2e_count::`cat ${PWD}/src/build/reports/test-pyramid.json | jq -r '.e2eCount'`"
+                    echo "::set-output name=unit_count::`cat ./build/reports/test-pyramid.json | jq -r '.unitCount'`"
+                    echo "::set-output name=integration_count::`cat ./build/reports/test-pyramid.json | jq -r '.integrationCount'`"
+                    echo "::set-output name=e2e_count::`cat ./src/build/reports/test-pyramid.json | jq -r '.e2eCount'`"
 
             -   name: Create comment
                 uses: peter-evans/create-or-update-comment@v1
                 if: always()
                 with:
+                    issue-number: ${{ github.event.action }}
                     body: |
                         Test pyramid:
                         - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
