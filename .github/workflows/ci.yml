@@ -1,17 +1,16 @@
 name: 'build-test'
 on:
     pull_request:
-    push:
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
 
-#            -   name: Set up NodeJS
-#            -   uses: actions/setup-node@v3
-#                with:
-#                    node-version: '12'
+            #            -   name: Set up NodeJS
+            #            -   uses: actions/setup-node@v3
+            #                with:
+            #                    node-version: '12'
 
             -   name: Set up JDK 8
                 uses: actions/setup-java@v3
@@ -32,18 +31,60 @@ jobs:
                 run: ./gradlew pyramidTest
 
             -   name: Analyze results
+                id: analyze
                 run: |
-                    echo "::set-output name=unit_count::`cat ./build/reports/test-pyramid.json | jq -r '.unitCount'`"
-                    echo "::set-output name=integration_count::`cat ./build/reports/test-pyramid.json | jq -r '.integrationCount'`"
-                    echo "::set-output name=e2e_count::`cat ./src/build/reports/test-pyramid.json | jq -r '.e2eCount'`"
+                    unit_count=`cat ./build/reports/test-pyramid.json | jq -r '.unitCount'`
+                    echo "::set-output name=unit_count::$unit_count"
+
+                    integration_count=`cat ./build/reports/test-pyramid.json | jq -r '.integrationCount'`
+                    echo "::set-output name=integration_count::$integration_count"
+
+                    e2e_count=`cat ./build/reports/test-pyramid.json | jq -r '.e2eCount'`
+                    echo "::set-output name=e2e_count::$e2e_count"
+
+                    all_count=$(($unit_count + $integration_count + $e2e_count))
+                    echo "::set-output name=all_count::$all_count"
+
+                    unit_percent=`echo $unit_count / $all_count | bc -l`
+                    echo "::set-output name=unit_percent::$unit_percent"
+
+                    integration_percent=`echo $integration_count / $all_count | bc -l`
+                    echo "::set-output name=integration_percent::$integration_percent"
+
+                    e2e_percent=`echo $e2e_count / $all_count | bc -l`
+                    echo "::set-output name=e2e_percent::$e2e_percent"
+
+                    if [[ $unit_percent > .6 ]]
+                    then
+                        echo "Pyramid is valid"
+                    else
+                        echo "Pyramid is invalid: number of unit tests only $unit_percent"
+                        false
+                    fi
+
+                    if [[$integration_percent < .3]]
+                    then
+                        echo "Pyramid is valid"
+                    else
+                        echo "Pyramid is invalid: number of integration tests more that $integration_percent"
+                        false
+                    fi
+
+                    if [[$e2e_percent < .1]]
+                    then
+                        echo "Pyramid is valid"
+                    else
+                        echo "Pyramid is invalid: number of end-to-end tests more that $e2e_percent"
+                        false
+                    fi
 
             -   name: Create comment
                 uses: peter-evans/create-or-update-comment@v1
                 if: always()
                 with:
-                    issue-number: 1
+                    issue-number: ${{ github.event.pull_request.number }}
                     body: |
                         Test pyramid:
-                        - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
-                        - Integration tests count: **${{ steps.analyze.outputs.integrationCount }}**
-                        - End-to-end tests count: **${{ steps.analyze.outputs.e2eCount }}**
+                        - Unit tests count: **${{ steps.analyze.outputs.unit_count }}** of **${{ steps.analyze.outputs.all_count }}**
+                        - Integration tests count: **${{ steps.analyze.outputs.integration_count }}** of **${{ steps.analyze.outputs.all_count }}**
+                        - End-to-end tests count: **${{ steps.analyze.outputs.e2e_count }}** of **${{ steps.analyze.outputs.all_count }}**
