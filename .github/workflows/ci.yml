@@ -33,9 +33,43 @@ jobs:
             -   name: Analyze results
                 id: analyze
                 run: |
-                    echo "::set-output name=unit_count::`cat ./build/reports/test-pyramid.json | jq -r '.unitCount'`"
-                    echo "::set-output name=integration_count::`cat ./build/reports/test-pyramid.json | jq -r '.integrationCount'`"
-                    echo "::set-output name=e2e_count::`cat ./build/reports/test-pyramid.json | jq -r '.e2eCount'`"
+                    unit_count=`cat ./build/reports/test-pyramid.json | jq -r '.unitCount'`
+                    echo "::set-output name=unit_count::$unit_count"
+
+                    integration_count=`cat ./build/reports/test-pyramid.json | jq -r '.integrationCount'`
+                    echo "::set-output name=integration_count::$integration_count"
+
+                    e2e_count=`cat ./build/reports/test-pyramid.json | jq -r '.e2eCount'`
+                    echo "::set-output name=e2e_count::$e2e_count"
+
+                    all_count=$unit_count+$integration_count+$e2e_count
+                    unit_percent=$unit_count/$all_count*100
+                    integration_percent=$integration_count/$all_count*100
+                    e2e_percent=$e2e_count/$all_count*100
+
+                    if [[$unit_percent >= 60]]
+                    then
+                        echo "Pyramid is valid"
+                    else
+                        echo "Pyramid is invalid: number of unit tests only $unit_percent %"
+                        false
+                    fi
+
+                    if [[$integration_percent < 30]]
+                    then
+                        echo "Pyramid is valid"
+                    else
+                        echo "Pyramid is invalid: number of integration tests more that $integration_percent %"
+                        false
+                    fi
+
+                    if [[$e2e_percent < 10]]
+                    then
+                        echo "Pyramid is valid"
+                    else
+                        echo "Pyramid is invalid: number of end-to-end tests more that $e2e_percent %"
+                        false
+                    fi
 
             -   name: Create comment
                 uses: peter-evans/create-or-update-comment@v1
@@ -45,5 +79,5 @@ jobs:
                     body: |
                         Test pyramid:
                         - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
-                        - Integration tests count: **${{ steps.analyze.outputs.integrationCount }}**
-                        - End-to-end tests count: **${{ steps.analyze.outputs.e2eCount }}**
+                        - Integration tests count: **${{ steps.analyze.outputs.integration_count }}**
+                        - End-to-end tests count: **${{ steps.analyze.outputs.e2e_count }}**
