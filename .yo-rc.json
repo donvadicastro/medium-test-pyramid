@@ -1,0 +1,39 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.medium.pyramid",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "5.8.2",
+    "applicationType": "monolith",
+    "baseName": "pyramid",
+    "packageName": "com.medium.pyramid",
+    "packageFolder": "com/medium/pyramid",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "OWE1NTJhZDMwN2M2ODhhZmZmNDJjNzJjN2Y4YzMwZDg2N2Q4YmNjYmVmMmI0MDJhNzNjMzkzNDRiOGZlNmRiZmUzYjVkYTg5ZmU5MzVhYTk0NDI0YmYxOTdhZWY0ZjFmYThlOWVkZTBhM2IxMWU3NjY5OWI1ZjdjNWNlZDRlMDQ=",
+    "clientFramework": "angularX",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en"
+    ]
+  }
+}
