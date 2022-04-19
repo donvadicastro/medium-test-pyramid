@@ -47,27 +47,27 @@ jobs:
                     integration_percent=`echo $integration_count / $all_count | bc -l`
                     e2e_percent=`echo $e2e_count / $all_count | bc -l`
 
-                    if [[$unit_percent >= 0.6]]
+                    if [[ $unit_percent > .6 ]]
                     then
                         echo "Pyramid is valid"
                     else
-                        echo "Pyramid is invalid: number of unit tests only $(($unit_percent * 100)) %"
+                        echo "Pyramid is invalid: number of unit tests only $unit_percent"
                         false
                     fi
 
-                    if [[$integration_percent < 0.3]]
+                    if [[$integration_percent < .3]]
                     then
                         echo "Pyramid is valid"
                     else
-                        echo "Pyramid is invalid: number of integration tests more that $(($integration_percent * 100)) %"
+                        echo "Pyramid is invalid: number of integration tests more that $integration_percent"
                         false
                     fi
 
-                    if [[$e2e_percent < 0.1]]
+                    if [[$e2e_percent < .1]]
                     then
                         echo "Pyramid is valid"
                     else
-                        echo "Pyramid is invalid: number of end-to-end tests more that $(($e2e_percent * 100)) %"
+                        echo "Pyramid is invalid: number of end-to-end tests more that $e2e_percent"
                         false
                     fi
 
