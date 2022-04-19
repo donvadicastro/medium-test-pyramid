@@ -43,9 +43,9 @@ jobs:
                     echo "::set-output name=e2e_count::$e2e_count"
 
                     all_count=$(($unit_count + $integration_count + $e2e_count))
-                    unit_percent=$(($unit_count / $all_count))
-                    integration_percent=$(($integration_count / $all_count))
-                    e2e_percent=$(($e2e_count / $all_count))
+                    unit_percent=echo "scale=2 ; $unit_count / $all_count" | bc
+                    integration_percent=echo "scale=2 ; $integration_count / $all_count" | bc
+                    e2e_percent=echo "scale=2 ; $e2e_count / $all_count" | bc
 
                     if [[$unit_percent >= 0.6]]
                     then
