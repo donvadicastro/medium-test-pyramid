@@ -41,7 +41,7 @@ jobs:
                 uses: peter-evans/create-or-update-comment@v1
                 if: always()
                 with:
-                    issue-number: ${{ github.event.action }}
+                    issue-number: 1
                     body: |
                         Test pyramid:
                         - Unit tests count: **${{ steps.analyze.outputs.unit_count }}**
