@@ -42,32 +42,32 @@ jobs:
                     e2e_count=`cat ./build/reports/test-pyramid.json | jq -r '.e2eCount'`
                     echo "::set-output name=e2e_count::$e2e_count"
 
-                    all_count=$((unit_count + integration_count + e2e_count))
-                    unit_percent=$((unit_count / all_count * 100))
-                    integration_percent=$((integration_count / all_count * 100))
-                    e2e_percent=$((e2e_count / all_count * 100))
+                    all_count=$(($unit_count + $integration_count + $e2e_count))
+                    unit_percent=$(($unit_count / $all_count))
+                    integration_percent=$(($integration_count / $all_count))
+                    e2e_percent=$(($e2e_count / $all_count))
 
-                    if [[$unit_percent >= 60]]
+                    if [[$unit_percent >= 0.6]]
                     then
                         echo "Pyramid is valid"
                     else
-                        echo "Pyramid is invalid: number of unit tests only $unit_percent %"
+                        echo "Pyramid is invalid: number of unit tests only $(($unit_percent * 100)) %"
                         false
                     fi
 
-                    if [[$integration_percent < 30]]
+                    if [[$integration_percent < 0.3]]
                     then
                         echo "Pyramid is valid"
                     else
-                        echo "Pyramid is invalid: number of integration tests more that $integration_percent %"
+                        echo "Pyramid is invalid: number of integration tests more that $(($integration_percent * 100)) %"
                         false
                     fi
 
-                    if [[$e2e_percent < 10]]
+                    if [[$e2e_percent < 0.1]]
                     then
                         echo "Pyramid is valid"
                     else
-                        echo "Pyramid is invalid: number of end-to-end tests more that $e2e_percent %"
+                        echo "Pyramid is invalid: number of end-to-end tests more that $(($e2e_percent * 100)) %"
                         false
                     fi
 
