@@ -2,6 +2,13 @@
 
 This application was generated using JHipster 5.8.2, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v5.8.2](https://www.jhipster.tech/documentation-archive/v5.8.2).
 
+## Motivation
+
+This is pure demo project and main reason of its creation is to share possibilities to measure test pyramid
+and provide additional CI step to check pyramid shape validity.
+
+![img.png](img.png)
+
 ## Development
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
@@ -37,9 +44,9 @@ Service workers are commented by default, to enable them please uncomment the fo
 ```html
 <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-        .register('./service-worker.js')
-        .then(function() { console.log('Service Worker Registered'); });
+        navigator.serviceWorker.register('./service-worker.js').then(function() {
+            console.log('Service Worker Registered');
+        });
     }
 </script>
 ```
